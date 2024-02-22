@@ -1,0 +1,7 @@
+{
+  "name": "JB-NOTES",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
