@@ -1,8 +1,9 @@
 import { Component, inject } from '@angular/core';
 import { RefresherCustomEvent } from '@ionic/angular';
-import { MessageComponent } from '../message/message.component';
-
-import { DataService, Message } from '../services/data.service';
+import { Router } from '@angular/router';
+import { Platform } from '@ionic/angular';
+import { DataService } from '../services/data.service';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -10,8 +11,20 @@ import { DataService, Message } from '../services/data.service';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
-  private data = inject(DataService);
-  constructor() {}
+
+
+  // private data = inject(DataService);  
+  private platform = inject(Platform);
+  constructor(public data: DataService, private router: Router) {}
+
+  ngOnInit() {
+    this.data.configDoc.valueChanges().pipe(take(1)).subscribe(config => {
+      console.log('THE CONFIG IS', config);
+      if (config && config?.lastId !== '0') {
+        this.router.navigate(['/notes/' + config.lastId]);
+      }
+    });
+  }
 
   refresh(ev: any) {
     setTimeout(() => {
@@ -19,7 +32,8 @@ export class HomePage {
     }, 3000);
   }
 
-  getMessages(): Message[] {
-    return this.data.getMessages();
+  
+  isIos() {
+    return this.platform.is('ios')
   }
 }

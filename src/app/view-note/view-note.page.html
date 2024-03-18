@@ -1,0 +1,41 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button [text]="getBackButtonText()" defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-label class="ion-text-wrap" *ngIf="note$ | async as noteOri">
+      <h1>{{ noteOri.title }}</h1>
+    </ion-label>
+    <ion-button slot="end" size="default" (click)="saveNote()">Save Note</ion-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" *ngIf="note">
+  <ion-item lines="none">
+    <ion-label>Created:</ion-label>
+    <ion-note slot="end" color="primary">{{ created$ | async }}</ion-note>
+  </ion-item>
+  <ion-item lines="none">
+    <ion-label>Updated:</ion-label>
+    <ion-note slot="end" color="secondary">{{ updated$ | async }}</ion-note>
+  </ion-item>
+  
+  <div class="ion-padding">
+    <ion-input
+      fill="outline"
+      label="Title:"
+      [value]="note.title"
+      (ionInput)="note.title = $event.detail.value || ''; noteChange$.next(note)"
+      >
+    </ion-input>
+    <ion-textarea 
+      style="margin: 15px 0" 
+      fill="outline" 
+      [autoGrow]="true"
+      [value]="note.content"
+      (ionInput)="updateContent($event.detail.value || '')"
+      >
+    </ion-textarea>
+    
+  </div>
+</ion-content>
