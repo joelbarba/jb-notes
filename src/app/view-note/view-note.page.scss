@@ -20,39 +20,15 @@ ion-label {
   margin-bottom: 0;
 }
 
-// ion-item h2 {
-//   font-weight: 600;
-  
-//   /**
-//    * With larger font scales
-//    * the date/time should wrap to the next
-//    * line. However, there should be
-//    * space between the name and the date/time
-//    * if they can appear on the same line.
-//    */
-//   display: flex;
-//   flex-wrap: wrap;
-//   justify-content: space-between;
-// }
-
-// ion-item .date {
-//   align-items: center;
-//   display: flex;
-// }
-
-// ion-item ion-icon {
-//   font-size: 42px;
-//   margin-right: 8px;
-// }
+ion-checkbox.list-checkbox label.checkbox-wrapper .label-text-wrapper {
+  margin-top: 5px;
+    // text-overflow: ellipsis;
+    // white-space: nowrap;
+    // overflow: hidden;
+}
 
 
-
-// h1 {
-//   margin: 0;
-//   font-weight: bold;
-//   font-size: 1.4rem;
-// }
-
-// p {
-//   line-height: 1.4;
-// }
+ion-checkbox::part(label) { margin: 2px 10px; }
+ion-checkbox {
+  --size: 18px;
+}

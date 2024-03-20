@@ -42,17 +42,6 @@
             <ion-col><ion-note color="secondary">{{ updated$ | async | date: 'dd MMM y - HH:mm:ss' }}</ion-note></ion-col>
           </ion-row>
 
-          <!-- Buttons -->
-          <ion-row>
-            <ion-col>
-              <ion-toolbar>
-                <ion-toggle slot="start" [checked]="note.mode === 'list'" (ionChange)="changeMode($event)">Check List:</ion-toggle>
-                <ion-button slot="end" size="default" (click)="delAlert(true)" color="danger">Del</ion-button>
-                <ion-button slot="end" size="default" (click)="saveNote()">Save</ion-button>
-              </ion-toolbar>
-            </ion-col>
-          </ion-row>
-
           <!-- Title -->
           <ion-row>
             <ion-col>
@@ -77,6 +66,18 @@
               </ion-input>
             </ion-col>
           </ion-row>
+
+          <!-- Buttons -->
+          <ion-row>
+            <ion-col>
+              <ion-toolbar>
+                <ion-button slot="start" size="default" (click)="delAlert(true)" color="danger">Del</ion-button>
+                <ion-button slot="start" size="default" (click)="saveNote()">Save</ion-button>
+                <ion-toggle slot="end" [checked]="note.mode === 'list'" (ionChange)="changeMode($event.detail.checked)">List Mode:</ion-toggle>
+              </ion-toolbar>
+            </ion-col>
+          </ion-row>
+
         </ion-grid>
       
 
@@ -92,22 +93,30 @@
     <ion-badge *ngIf="note.$saved === 'no'"     color="danger"> Unsaved </ion-badge>
 
     <!-- Content -->
-    <ion-textarea *ngIf="note.mode === 'text'"
-                  fill="outline" 
-                  [autoGrow]="true"
-                  [autofocus]="true"
-                  [value]="note.content"
-                  (ionInput)="updateContent($event)">
-    </ion-textarea>
+    <div *ngIf="note.mode === 'text'">
+      <ion-textarea fill="outline" 
+                    [autoGrow]="true"
+                    [autofocus]="true"
+                    [value]="note.content"
+                    (ionInput)="updateContent($event)">
+      </ion-textarea>
+      <ion-toolbar style="margin-top: 30px" *ngIf="!moreInfo && listBtn">
+        <ion-button slot="end" color="secondary" (click)="changeMode(true)">List Mode</ion-button>
+      </ion-toolbar>
+    </div>
 
     <ion-list style="padding: 0" *ngIf="note.mode === 'list'">
       <ion-item *ngFor="let item of checkList" [detail]="false">
           <ion-checkbox 
+            class="list-checkbox"
             justify="start" 
             labelPlacement="end"
             [checked]="item.checked"
             (ionChange)="checkItem(item, $event.detail.checked)">{{item.text}}</ion-checkbox>
-        </ion-item>
+      </ion-item>
+      <ion-toolbar style="margin-top: 30px" *ngIf="!moreInfo">
+        <ion-button slot="end" color="secondary" (click)="changeMode(false)">Text Mode</ion-button>
+      </ion-toolbar>
     </ion-list>
     
     <!-- <pre>checkList={{checkList | json}}</pre> -->

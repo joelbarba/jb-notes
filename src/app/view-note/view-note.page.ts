@@ -1,5 +1,4 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IonicModule, Platform } from '@ionic/angular';
 import { DataService, INote } from '../services/data.service';
@@ -15,6 +14,7 @@ type TCheckItem = {
   selector: 'app-view-note',
   templateUrl: './view-note.page.html',
   styleUrls: ['./view-note.page.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class ViewNotePage implements OnInit {
   private platform = inject(Platform);
@@ -29,6 +29,7 @@ export class ViewNotePage implements OnInit {
   updated$!: Observable<string>;
 
   moreInfo = false; // whether the accordion with more info is expanded (true) or collapsed (false)
+  listBtn = false;
   
   checkList: TCheckItem[] = [];
 
@@ -69,9 +70,11 @@ export class ViewNotePage implements OnInit {
       if (!this.note) { // Fist time we load the note on the page
         this.note = n;
         this.note.id = id;
-        this.note.$saved = 'yes';
+        this.note.$saved = 'yes';        
         this.data.configDoc.update({ lastId: this.note.id }); // Mark this note as the last visited
+        if (!this.note.mode) { this.note.mode = 'text'; }
         if (this.note.mode === 'list') { this.turnTextToCheckList(); }
+        this.listBtn = (this.note.content[0] === '-' || this.note.content.indexOf(`\n-`) >= 0);
 
       } else { // Updating note's content while on the page
         if (this.note.$saved === 'yes') { this.note = { ...this.note, ...n }; }
@@ -100,16 +103,16 @@ export class ViewNotePage implements OnInit {
     this.router.navigate(['/home']);
   }
 
-  changeMode($event: any) {
+  changeMode(checked: boolean) {
     // console.log('changeMode', $event.detail.checked);
     const prevContent = this.note.content;
-    if (this.note.mode === 'text' && $event.detail.checked) {
+    if (this.note.mode === 'text' && checked) {
       this.turnTextToCheckList();
       this.note.content = this.formatListToText();
       this.note.mode = 'list';
       // this.note.$saved = this.note.$saved === 'yes' ? 'no' : 'yes';
       
-    } else if (this.note.mode === 'list' && !$event.detail.checked)  {
+    } else if (this.note.mode === 'list' && !checked)  {
       this.note.content = this.formatListToText();
       this.note.mode = 'text';
       // this.note.$saved = this.note.$saved === 'yes' ? 'no' : 'yes';
@@ -143,8 +146,10 @@ export class ViewNotePage implements OnInit {
     if (text[i] === ' ') { i++; } // Ignore space after '- '
     if (text.slice(i, i + 4) === '[ ] ') { return { checked: false, text: text.slice(i + 4) }; }
     if (text.slice(i, i + 4) === '[X] ') { return { checked: true,  text: text.slice(i + 4) }; }
+    if (text.slice(i, i + 4) === '[x] ') { return { checked: true,  text: text.slice(i + 4) }; }
     if (text.slice(i, i + 3) === '[ ]')  { return { checked: false, text: text.slice(i + 3) }; }
     if (text.slice(i, i + 3) === '[X]')  { return { checked: true,  text: text.slice(i + 3) }; }
+    if (text.slice(i, i + 3) === '[x]')  { return { checked: true,  text: text.slice(i + 3) }; }
     if (text.slice(i, i + 3) === '[] ')  { return { checked: false, text: text.slice(i + 3) }; }
     if (text.slice(i, i + 2) === '[]')   { return { checked: false, text: text.slice(i + 2) }; }
 
@@ -190,10 +195,13 @@ export class ViewNotePage implements OnInit {
       if (value[charAt] === `\n`) {
         const line = value.slice(0, charAt).split(`\n`).at(-1);
         if (line[0] === '-') {
-          value = value.slice(0, charAt + 1) + '- [ ] ' + value.slice(charAt + 1, -1);
+          value = value.slice(0, charAt + 1) + '- ' + value.slice(charAt + 1, -1);
         }
       }
     }
+
+    this.listBtn = (value[0] === '-' || value.indexOf(`\n-`) >= 0);
+
     this.note.content = value;
     this.noteChange$.next(this.note);
   }

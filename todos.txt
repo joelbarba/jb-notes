@@ -1,0 +1,4 @@
+- add backups
+- add share note (to send to email/drive)
+- change textarea to a custome one
+- compact list when large

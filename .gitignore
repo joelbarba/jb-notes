@@ -68,3 +68,5 @@ testem.log
 Thumbs.db
 
 secrets.ts
+/android
+/android/*
