@@ -30,6 +30,7 @@ export class ViewNotePage implements OnInit {
 
   moreInfo = false; // whether the accordion with more info is expanded (true) or collapsed (false)
   listBtn = false;
+  listSize: 'small' | 'mid' | 'large' = 'small';
   
   checkList: TCheckItem[] = [];
 
@@ -73,8 +74,8 @@ export class ViewNotePage implements OnInit {
         this.note.$saved = 'yes';        
         this.data.configDoc.update({ lastId: this.note.id }); // Mark this note as the last visited
         if (!this.note.mode) { this.note.mode = 'text'; }
-        if (this.note.mode === 'list') { this.turnTextToCheckList(); }
         this.listBtn = (this.note.content[0] === '-' || this.note.content.indexOf(`\n-`) >= 0);
+        if (this.note.mode === 'list') { this.turnTextToCheckList(); }
 
       } else { // Updating note's content while on the page
         if (this.note.$saved === 'yes') { this.note = { ...this.note, ...n }; }
@@ -137,6 +138,10 @@ export class ViewNotePage implements OnInit {
       }
     }
     this.checkList.push(this.formatCheckLineText(text));
+
+    this.listSize = 'small';
+    if (this.checkList.length > 20) { this.listSize = 'mid'; }
+    if (this.checkList.length > 30) { this.listSize = 'large'; }
     console.log(this.checkList);
   }
 

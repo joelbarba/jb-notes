@@ -9,6 +9,8 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { getAuth, provideAuth } from '@angular/fire/auth';
+
 import { firebaseConfig } from 'secrets';
 
 @NgModule({
@@ -19,6 +21,7 @@ import { firebaseConfig } from 'secrets';
     AppRoutingModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(firebaseConfig),
+    // provideAuth(() => getAuth()),
     AngularFirestoreModule
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],

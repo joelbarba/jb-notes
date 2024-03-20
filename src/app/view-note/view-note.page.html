@@ -86,8 +86,8 @@
   </ion-accordion-group>
 
 
-  <div class="ion-padding" style="padding-top: 7.5px">
-
+  <div class="ion-padding note-content" [ngClass]="listSize">
+ 
     <ion-badge *ngIf="note.$saved === 'yes'"    color="success" style="visibility: hidden;">Saved</ion-badge>
     <ion-badge *ngIf="note.$saved === 'saving'" color="warning"> Saving... </ion-badge>
     <ion-badge *ngIf="note.$saved === 'no'"     color="danger"> Unsaved </ion-badge>

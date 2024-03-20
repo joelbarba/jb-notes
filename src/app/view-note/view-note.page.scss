@@ -27,8 +27,19 @@ ion-checkbox.list-checkbox label.checkbox-wrapper .label-text-wrapper {
     // overflow: hidden;
 }
 
+.note-content {
+  padding-top: 7.5px;
 
-ion-checkbox::part(label) { margin: 2px 10px; }
-ion-checkbox {
-  --size: 18px;
+  ion-checkbox::part(label) { margin: 10px 16px; }
+  ion-checkbox { --size: 18px; }
+
+  &.mid {
+    ion-checkbox::part(label) { margin: 6px 16px; }
+    ion-checkbox { --size: 18px; }
+  }
+  &.large {
+    ion-checkbox::part(label) { margin: 2px 16px; }
+    ion-checkbox { --size: 18px; }
+  }
 }
+
