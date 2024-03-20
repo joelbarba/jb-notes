@@ -17,19 +17,29 @@ export class HomePage {
   private platform = inject(Platform);
   constructor(public data: DataService, private router: Router) {}
 
-  ngOnInit() {
-    this.data.configDoc.valueChanges().pipe(take(1)).subscribe(config => {
-      console.log('THE CONFIG IS', config);
-      if (config && config?.lastId !== '0') {
-        this.router.navigate(['/notes/' + config.lastId]);
-      }
-    });
+  ngOnInit() {}
+
+  formatDate(seconds: number) {
+    return new Date(seconds * 1000);
   }
 
   refresh(ev: any) {
     setTimeout(() => {
       (ev as RefresherCustomEvent).detail.complete();
     }, 3000);
+  }
+
+  newNote() {
+    this.data.notesCol.add({
+      title: 'New Note',
+      content: '',
+      order: 0,
+      mode: 'text',
+      updated: this.data.getCurrentTime(),
+      created: this.data.getCurrentTime(),
+    }).then(docRef => {
+      this.router.navigate(['/notes/' + docRef.id]);
+    });
   }
 
   

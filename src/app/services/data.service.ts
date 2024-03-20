@@ -1,15 +1,17 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { map, filter } from 'rxjs';
+import { Router, ActivatedRoute } from '@angular/router';
+import { map, take } from 'rxjs';
 
 export interface INote {
   id?: string;
   title: string;
   content: string;
+  order: number;
+  mode: 'text' | 'list';
   updated: any;
   created: any;
-  lastAccess: any;
-  $saved?: boolean;
+  $saved?: 'yes' | 'no' | 'saving';  // set to false while typing into the textarea, and true when saved to DB 
 }
 
 export interface IConfig {
@@ -21,27 +23,46 @@ export class DataService {
   notesCol = this.af.collection<INote>('notes');
   configDoc = this.af.doc<IConfig>('notes/0');
   notes$ = this.notesCol.valueChanges();
+  lastId: string = '0';
 
-  constructor(private af: AngularFirestore) {
+  constructor(private af: AngularFirestore, private router: Router, private route: ActivatedRoute) {
     this.loadNotes();
+    this.configDoc.valueChanges().pipe(take(1)).subscribe(config => {
+      console.log('THE CONFIG IS', config);
+      if (this.router.url === '/home' && config && config?.lastId !== '0') {
+        this.router.navigate(['/notes/' + config.lastId]);
+      }
+    });
   }
 
   loadNotes() {
     this.notes$ = this.notesCol.snapshotChanges().pipe(
-      map(actions => actions.map(a => {
-        const data = a.payload.doc.data() as INote;
-        return { id: a.payload.doc.id, ...data };
-      }).filter(n => n.id !== '0'))
+      map(notes => notes
+        .map(n => {
+          const data = n.payload.doc.data() as INote;
+          return { id: n.payload.doc.id, ...data };
+        })
+        .filter(n => n.id !== '0')
+        .sort((a, b) => {
+          if (!!a.order || !!b.order) { return (a.order || 0) > (b.order || 0) ? -1 : 1; }
+          return a.updated > b.updated ? -1 : 1;
+        })
+      )
     );
   }
 
-  formatDate(fDate: { seconds: number, nanoseconds: number }): string {
-    const dp = (new Date(fDate.seconds * 1000) + '').split(' ');
-    return `${dp[2]} ${dp[1]} ${dp[3]} - ${dp[4]}`;
-  }
+  // formatDate(fDate: { seconds: number, nanoseconds: number }): string {
+  //   const dp = (new Date(fDate.seconds * 1000) + '').split(' ');
+  //   return `${dp[2]} ${dp[1]} ${dp[3]} - ${dp[4]}`;
+  // }
 
   getNote(id: string) {
     return this.notes$.pipe(map(notes => notes.find(n => n.id === id)));
+  }
+
+  getCurrentTime() {
+    return (new Date()).getTime(); // ms
+    // return { seconds: Math.round((new Date()).getTime() / 1000), nanoseconds: 0, };
   }
 
 }

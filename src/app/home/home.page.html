@@ -1,6 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>Notes</ion-title>
+    <ion-button slot="end" size="default" (click)="newNote()">New Note</ion-button>
   </ion-toolbar>
 </ion-header>
 
@@ -11,9 +12,11 @@
   
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Notes</ion-title>
+      <ion-title size="large">Notesss</ion-title>
     </ion-toolbar>
+    <ion-button slot="end" size="default" (click)="newNote()">New Note</ion-button>
   </ion-header>
+
 
   <!-- <div>
     <h2>Raw Content</h2>
@@ -29,12 +32,13 @@
           <h2>
             {{ note.title }}
             <span class="date">
-              <ion-note>{{ note.updated | json }}</ion-note>
+              <ion-note color="primary">{{ note.updated | date: 'dd MMM y - HH:mm:ss' }}</ion-note>
               <ion-icon aria-hidden="true" name="chevron-forward" size="small" *ngIf="isIos()"></ion-icon>
             </span>
           </h2>
-          <h3>{{ note.content }}</h3>
-          <p>ID = {{ note.id }}</p>
+          <!-- <h3>o = {{note?.order}}</h3> -->
+          <p style="padding-top: 5px;">{{ note.content.slice(0, 100) }}</p>
+          <!-- <p>ID = {{ note.id }}</p> -->
         </ion-label>
       </ion-item>
   </ion-list>
