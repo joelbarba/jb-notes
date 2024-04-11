@@ -19,7 +19,6 @@ import { firebaseConfig } from 'secrets';
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-    AppRoutingModule,
     AngularFireModule.initializeApp(firebaseConfig),
     // provideAuth(() => getAuth()),
     AngularFirestoreModule

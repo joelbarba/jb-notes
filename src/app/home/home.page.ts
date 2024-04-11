@@ -12,12 +12,11 @@ import { take } from 'rxjs';
 })
 export class HomePage {
 
-
   // private data = inject(DataService);  
   private platform = inject(Platform);
   constructor(public data: DataService, private router: Router) {}
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   formatDate(seconds: number) {
     return new Date(seconds * 1000);
@@ -40,6 +39,11 @@ export class HomePage {
     }).then(docRef => {
       this.router.navigate(['/notes/' + docRef.id]);
     });
+  }
+
+  changeDarkMode(value: boolean) {
+    this.data.changeDarkMode(value);
+    this.data.configDoc.update({ darkMode: value });
   }
 
   

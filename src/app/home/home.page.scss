@@ -67,3 +67,8 @@ ion-item {
     font-size: 11px;
     font-weight: normal;
   }
+
+  ion-header ion-toolbar {
+    ion-toggle { margin-right: 80px; }
+    ion-button { margin-right: 15px; }
+  }

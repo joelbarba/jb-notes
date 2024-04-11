@@ -65,15 +65,20 @@
                 (ionInput)="updateOrder($event)">
               </ion-input>
             </ion-col>
+            <ion-col>
+              <ion-toolbar>
+                <ion-toggle slot="end" [checked]="note.mode === 'list'" (ionChange)="changeMode($event.detail.checked)">List Mode:</ion-toggle>
+              </ion-toolbar>
+            </ion-col>
           </ion-row>
 
           <!-- Buttons -->
           <ion-row>
             <ion-col>
               <ion-toolbar>
-                <ion-button slot="start" size="default" (click)="delAlert(true)" color="danger">Del</ion-button>
-                <ion-button slot="start" size="default" (click)="saveNote()">Save</ion-button>
-                <ion-toggle slot="end" [checked]="note.mode === 'list'" (ionChange)="changeMode($event.detail.checked)">List Mode:</ion-toggle>
+                <ion-button slot="start" (click)="delAlert(true)" color="danger"><ion-icon name="trash-outline"></ion-icon> Del</ion-button>
+                <ion-button slot="start" (click)="saveNote()"><ion-icon name="save-outline"></ion-icon> Save</ion-button>
+                <ion-button slot="end"   (click)="shareNote()"><ion-icon slot="start" name="share-outline"></ion-icon>Share</ion-button>                
               </ion-toolbar>
             </ion-col>
           </ion-row>

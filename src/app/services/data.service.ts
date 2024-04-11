@@ -16,6 +16,7 @@ export interface INote {
 
 export interface IConfig {
   lastId: string;
+  darkMode: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -24,14 +25,17 @@ export class DataService {
   configDoc = this.af.doc<IConfig>('notes/0');
   notes$ = this.notesCol.valueChanges();
   lastId: string = '0';
+  config: IConfig = { lastId: '0', darkMode: true };
 
   constructor(private af: AngularFirestore, private router: Router, private route: ActivatedRoute) {
     this.loadNotes();
     this.configDoc.valueChanges().pipe(take(1)).subscribe(config => {
       console.log('THE CONFIG IS', config);
+      this.config = config as IConfig;
       if (this.router.url === '/home' && config && config?.lastId !== '0') {
         this.router.navigate(['/notes/' + config.lastId]);
       }
+      this.changeDarkMode(config?.darkMode);
     });
   }
 
@@ -63,6 +67,14 @@ export class DataService {
   getCurrentTime() {
     return (new Date()).getTime(); // ms
     // return { seconds: Math.round((new Date()).getTime() / 1000), nanoseconds: 0, };
+  }
+
+  changeDarkMode(value = true) {
+    console.log('changeDarkMode', value);
+    this.config.darkMode = value;
+    const bodyTag = document.body;
+    if (value) { bodyTag.classList.add('dark'); }
+    else       { bodyTag.classList.remove('dark'); }
   }
 
 }

@@ -1,4 +1,10 @@
-- add backups
-- add share note (to send to email/drive)
+x - compact list when large
+x - add share note (to send to email/drive)
+x - add backups
+- add notebooks to nest notes
+- add list item edit (popup)
+- add darktheme switch config
+- add list text edit switch to add "-" when enter
 - change textarea to a custome one
-- compact list when large
+- add images (icon per note on the list)
+- Build a web version layout

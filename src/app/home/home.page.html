@@ -1,6 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>Notes</ion-title>
+    <ion-toggle slot="end" [checked]="data.config.darkMode" (ionChange)="changeDarkMode($event.detail.checked)">Dark Mode:</ion-toggle>
     <ion-button slot="end" size="default" (click)="newNote()">New Note</ion-button>
   </ion-toolbar>
 </ion-header>

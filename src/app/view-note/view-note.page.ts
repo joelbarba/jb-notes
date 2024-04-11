@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IonicModule, Platform } from '@ionic/angular';
 import { DataService, INote } from '../services/data.service';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { Share } from '@capacitor/share';
 import { map, tap, debounceTime, Observable, Subject } from 'rxjs';
 
 type TCheckItem = {
@@ -106,20 +107,22 @@ export class ViewNotePage implements OnInit {
 
   changeMode(checked: boolean) {
     // console.log('changeMode', $event.detail.checked);
-    const prevContent = this.note.content;
+    // const prevContent = this.note.content;
     if (this.note.mode === 'text' && checked) {
       this.turnTextToCheckList();
       this.note.content = this.formatListToText();
       this.note.mode = 'list';
+      this.noteChange$.next(this.note);
       // this.note.$saved = this.note.$saved === 'yes' ? 'no' : 'yes';
       
     } else if (this.note.mode === 'list' && !checked)  {
       this.note.content = this.formatListToText();
       this.note.mode = 'text';
+      this.noteChange$.next(this.note);
       // this.note.$saved = this.note.$saved === 'yes' ? 'no' : 'yes';
     }
 
-    if (prevContent !== this.note.content) { this.noteChange$.next(this.note); }
+    // if (prevContent !== this.note.content) { this.noteChange$.next(this.note); }
   }
 
   turnTextToCheckList() {
@@ -140,7 +143,7 @@ export class ViewNotePage implements OnInit {
     this.checkList.push(this.formatCheckLineText(text));
 
     this.listSize = 'small';
-    if (this.checkList.length > 20) { this.listSize = 'mid'; }
+    if (this.checkList.length > 15) { this.listSize = 'mid'; }
     if (this.checkList.length > 30) { this.listSize = 'large'; }
     console.log(this.checkList);
   }
@@ -168,7 +171,7 @@ export class ViewNotePage implements OnInit {
   checkItem(item: TCheckItem, checked: boolean) {
     item.checked = checked;
     console.log(this.checkList);
-    this.formatListToText();
+    this.note.content = this.formatListToText();
     console.log(this.note.content);
     this.noteChange$.next(this.note);
   }
@@ -200,7 +203,7 @@ export class ViewNotePage implements OnInit {
       if (value[charAt] === `\n`) {
         const line = value.slice(0, charAt).split(`\n`).at(-1);
         if (line[0] === '-') {
-          value = value.slice(0, charAt + 1) + '- ' + value.slice(charAt + 1, -1);
+          value = value.slice(0, charAt + 1) + '- ' + value.slice(charAt + 1);
         }
       }
     }
@@ -224,5 +227,11 @@ export class ViewNotePage implements OnInit {
       this.noteDoc.update(updatedNote);
       this.note.$saved = 'yes';
     }
+  }
+
+  async shareNote() {
+    let text = this.note.content; 
+    if (this.note.mode === 'list') { text = this.formatListToText(); }
+    await Share.share({ title: this.note.title, text });
   }
 }

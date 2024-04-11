@@ -68,5 +68,6 @@ testem.log
 Thumbs.db
 
 secrets.ts
+/node-backup/secrets.js
 /android
 /android/*
