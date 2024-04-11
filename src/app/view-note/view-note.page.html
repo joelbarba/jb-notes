@@ -6,8 +6,8 @@
     <ion-label class="ion-text-wrap" *ngIf="note$ | async as noteOri">
       <h1>{{ noteOri.title }}</h1>
     </ion-label>    
-    <ion-button *ngIf="!moreInfo" slot="end" color="secondary" (click)="moreInfo = true">+</ion-button>
-    <ion-button *ngIf="moreInfo"  slot="end" color="secondary" (click)="moreInfo = false">-</ion-button>
+    <ion-button *ngIf="!moreInfo" slot="end" color="secondary" (click)="moreInfo = true">More Options</ion-button>
+    <ion-button *ngIf="moreInfo"  slot="end" color="secondary" (click)="moreInfo = false">Less</ion-button>
 
   </ion-toolbar>
 </ion-header>
@@ -19,6 +19,14 @@
     message="Are you sure you want to delete this note?"
     [buttons]="alertButtons"
     (didDismiss)="delAlert(false)"
+  ></ion-alert>
+
+  <ion-alert
+    [isOpen]="editAlert.isOpen"
+    header="Edit List Item"
+    [buttons]="editAlert.buttons"
+    [inputs]="editAlert.inputs"
+    (didDismiss)="editAlert.isOpen = false"
   ></ion-alert>
 
   <ion-accordion-group #accordionGroup [value]="moreInfo ? 'more' : undefined">
@@ -110,7 +118,7 @@
       </ion-toolbar>
     </div>
 
-    <ion-list style="padding: 0" *ngIf="note.mode === 'list'">
+    <ion-list style="padding: 0" *ngIf="note.mode === 'list'" [class.dark]="data.config.darkMode">
       <ion-item *ngFor="let item of checkList" [detail]="false">
           <ion-checkbox 
             class="list-checkbox"
@@ -118,6 +126,7 @@
             labelPlacement="end"
             [checked]="item.checked"
             (ionChange)="checkItem(item, $event.detail.checked)">{{item.text}}</ion-checkbox>
+          <ion-button slot="end" color="primary" (click)="openEditNote(item)">Edit</ion-button>
       </ion-item>
       <ion-toolbar style="margin-top: 30px" *ngIf="!moreInfo">
         <ion-button slot="end" color="secondary" (click)="changeMode(false)">Text Mode</ion-button>

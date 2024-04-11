@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>Notes</ion-title>
-    <ion-toggle slot="end" [checked]="data.config.darkMode" (ionChange)="changeDarkMode($event.detail.checked)">Dark Mode:</ion-toggle>
+    <ion-toggle slot="end" [checked]="data.config.darkMode" (ionChange)="changeDarkMode($event.detail.checked)">Dark:</ion-toggle>
     <ion-button slot="end" size="default" (click)="newNote()">New Note</ion-button>
   </ion-toolbar>
 </ion-header>
@@ -26,7 +26,7 @@
     </div>
   </div> -->
   
-  <ion-list>
+  <ion-list [class.dark]="data.config.darkMode">
     <ion-item *ngFor="let note of data.notes$ | async" [routerLink]="'/notes/' + note.id" [detail]="false">
         <div slot="start" class="dot dot-unread"></div>
         <ion-label class="ion-text-wrap">

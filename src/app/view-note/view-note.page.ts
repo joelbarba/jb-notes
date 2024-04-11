@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IonicModule, Platform } from '@ionic/angular';
+import { AlertOptions, IonicModule, Platform } from '@ionic/angular';
 import { DataService, INote } from '../services/data.service';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Share } from '@capacitor/share';
@@ -48,6 +48,16 @@ export class ViewNotePage implements OnInit {
       handler: () => { this.deleteNote(); },
     },
   ];
+
+  editAlert: AlertOptions & { isOpen: boolean } = {
+    isOpen: false,
+    buttons: [
+      { text: 'Delete', role: 'delete', },
+      { text: 'Cancel', role: 'cancel', },
+      { text: 'Save',   role: 'confirm', },
+    ],
+    inputs: [{ label: 'Item', value: '' }]
+  };
 
 
   constructor(
@@ -145,7 +155,7 @@ export class ViewNotePage implements OnInit {
     this.listSize = 'small';
     if (this.checkList.length > 15) { this.listSize = 'mid'; }
     if (this.checkList.length > 30) { this.listSize = 'large'; }
-    console.log(this.checkList);
+    // console.log(this.checkList);
   }
 
   formatCheckLineText(text: string): TCheckItem {
@@ -170,9 +180,9 @@ export class ViewNotePage implements OnInit {
 
   checkItem(item: TCheckItem, checked: boolean) {
     item.checked = checked;
-    console.log(this.checkList);
+    // console.log(this.checkList);
     this.note.content = this.formatListToText();
-    console.log(this.note.content);
+    // console.log(this.note.content);
     this.noteChange$.next(this.note);
   }
 
@@ -184,6 +194,28 @@ export class ViewNotePage implements OnInit {
   deleteNote() {
     this.noteDoc.delete().then(() => this.goBack());    
   }
+
+  openEditNote(item: TCheckItem) {
+    console.log(item);
+    this.editAlert.inputs = [{ label: 'Item', type: 'textarea', value: item.text }];
+    this.editAlert.buttons = [
+      { text: 'Delete', role: 'delete', handler: (_ => {
+        console.log('deleteItem', item);
+        this.checkList.splice(this.checkList.indexOf(item), 1);
+        this.note.content = this.formatListToText();
+        this.noteChange$.next(this.note);
+      }) },
+      // { text: 'Cancel', role: 'cancel', },
+      { text: '------ Save ------',   role: 'confirm', handler: (values => {
+        console.log('editItem', item, ' --> ', values['0']);
+        item.text = values['0'];
+        this.note.content = this.formatListToText();
+        this.noteChange$.next(this.note);
+      }) },
+    ],
+    this.editAlert.isOpen = true;
+  }
+
 
   updateOrder($event: any) {
     let value = Number.parseInt($event.detail.value);
