@@ -3,8 +3,8 @@ x - add share note (to send to email/drive)
 x - add backups
 x - add darktheme switch config
 x - add list item edit (popup)
+x - add list text edit switch to add "-" when enter
 - add notebooks to nest notes
-- add list text edit switch to add "-" when enter
 - change textarea to a custome one
 - add images (icon per note on the list)
 - Build a web version layout

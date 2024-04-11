@@ -114,6 +114,7 @@
                     (ionInput)="updateContent($event)">
       </ion-textarea>
       <ion-toolbar style="margin-top: 30px" *ngIf="!moreInfo && listBtn">
+        <ion-toggle slot="start" [checked]="data.config.jumpMode" (ionChange)="changeListEditMode($event.detail.checked)" *ngIf="showListEditMode()">Dash on Break</ion-toggle>
         <ion-button slot="end" color="secondary" (click)="changeMode(true)">List Mode</ion-button>
       </ion-toolbar>
     </div>

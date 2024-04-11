@@ -17,6 +17,7 @@ export interface INote {
 export interface IConfig {
   lastId: string;
   darkMode: boolean;
+  jumpMode: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -25,7 +26,7 @@ export class DataService {
   configDoc = this.af.doc<IConfig>('notes/0');
   notes$ = this.notesCol.valueChanges();
   lastId: string = '0';
-  config: IConfig = { lastId: '0', darkMode: true };
+  config: IConfig = { lastId: '0', darkMode: true, jumpMode: false };
 
   constructor(private af: AngularFirestore, private router: Router, private route: ActivatedRoute) {
     this.loadNotes();

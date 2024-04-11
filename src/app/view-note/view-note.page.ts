@@ -186,6 +186,15 @@ export class ViewNotePage implements OnInit {
     this.noteChange$.next(this.note);
   }
 
+  showListEditMode() {
+    return this.note.content.length > 0 && this.note.content[0] === '-';
+  }
+  changeListEditMode(value: boolean) {
+    if (this.data.config.jumpMode !== value) {
+      this.data.config.jumpMode = value;
+      this.data.configDoc.update({ jumpMode: value });
+    }
+  }
 
   delAlert(isOpen: boolean) {
     this.isAlertOpen = isOpen;
@@ -226,7 +235,7 @@ export class ViewNotePage implements OnInit {
   updateContent($event: any) {
     // console.log($event);
     let value = $event.detail.value || '';
-    if (value.length > this.note.content.length) {
+    if (this.data.config.jumpMode && value.length > this.note.content.length) {
       let charAt = value.length - 1; // index where the new char is inserted
       let charAt2 = this.note.content.length - 1;
       while (charAt >= 0 && value[charAt] === this.note.content[charAt2]) { charAt--; charAt2--; }
