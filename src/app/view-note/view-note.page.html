@@ -57,6 +57,7 @@
                 fill="outline"
                 label="Title:"
                 [value]="note.title"
+                #titleInput
                 (ionInput)="note.title = $event.detail.value || ''; noteChange$.next(note)">
               </ion-input> 
             </ion-col>
@@ -105,8 +106,39 @@
     <ion-badge *ngIf="note.$saved === 'saving'" color="warning"> Saving... </ion-badge>
     <ion-badge *ngIf="note.$saved === 'no'"     color="danger"> Unsaved </ion-badge>
 
+    <!-- <div class="notebook-label" [class.invisible]="!note.notebookId"> -->
+    <div class="notebook-label">
+      <ion-icon style="margin: 2px 5px 0 0;" name="book-sharp" size="small"></ion-icon>
+      <!-- <ion-action-sheet
+        [isOpen]="isActionSheetOpen"
+        header="Move to Notebook:"
+        [buttons]="notebookActionButtons"
+        (didDismiss)="setOpen(false)"
+      ></ion-action-sheet> -->
+      <ion-select 
+        aria-label="notebook"
+        justify="start"
+        interface="action-sheet"
+        label="Notebook:"
+        cancelText="-- Cancel --"
+        toggleIcon=""
+        [value]="note.notebookId"
+        (ionChange)="moveNotebook($event.detail.value)"
+        >
+        <!-- toggleIcon="book" -->
+        <!-- selectedText=" " -->
+        <ion-select-option *ngFor="let notebook of data.notebooks$ | async" [value]="notebook.id">
+          <!-- <ion-icon name="book-sharp"></ion-icon> -->
+          {{notebook.name}}
+        </ion-select-option>
+      </ion-select>
+
+
+      <!-- <span style="margin-left: 5px;">{{note.notebookId}}</span> -->
+    </div>
+
     <!-- Content -->
-    <div *ngIf="note.mode === 'text'">
+    <div class="note-text-content" *ngIf="note.mode === 'text'">
       <ion-textarea fill="outline" 
                     [autoGrow]="true"
                     [autofocus]="true"
@@ -119,15 +151,16 @@
       </ion-toolbar>
     </div>
 
-    <ion-list style="padding: 0" *ngIf="note.mode === 'list'" [class.dark]="data.config.darkMode">
+    <ion-list class="note-list-content" style="padding: 0" *ngIf="note.mode === 'list'" [class.dark]="data.config.darkMode">
       <ion-item *ngFor="let item of checkList" [detail]="false">
           <ion-checkbox 
             class="list-checkbox"
-            justify="start" 
+            justify="start"
             labelPlacement="end"
             [checked]="item.checked"
             (ionChange)="checkItem(item, $event.detail.checked)">{{item.text}}</ion-checkbox>
-          <ion-button slot="end" color="primary" (click)="openEditNote(item)">Edit</ion-button>
+          <ion-icon name="caret-forward-outline" (click)="openEditNote(item)"></ion-icon>
+          <!-- <ion-button slot="end" color="primary" (click)="openEditNote(item)">Edit</ion-button> -->
       </ion-item>
       <ion-toolbar style="margin-top: 30px" *ngIf="!moreInfo">
         <ion-button slot="end" color="secondary" (click)="changeMode(false)">Text Mode</ion-button>
@@ -138,4 +171,6 @@
 
 
   </div>
+
+
 </ion-content>

@@ -69,9 +69,17 @@ ion-item {
   }
 
   ion-header ion-toolbar {
-    ion-toggle { margin-right: 30px; }
+    .dark-mode-btn {
+      margin-right: 50px; 
+      font-size: 28px;
+      display: flex;
+    }
     ion-button { margin-right: 15px; }
   }
 
 
 ion-list.dark ion-item { border-bottom: 1px solid #555555; }
+
+.notebook-label {
+  display: flex;
+}

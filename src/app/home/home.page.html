@@ -1,8 +1,23 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Notes</ion-title>
-    <ion-toggle slot="end" [checked]="data.config.darkMode" (ionChange)="changeDarkMode($event.detail.checked)">Dark:</ion-toggle>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>  
+    <ion-title>JB-Notes</ion-title>
+    <div class="dark-mode-btn" slot="end" (click)="changeDarkMode()">
+      <ion-icon *ngIf="data.config.darkMode"  name="moon-outline"></ion-icon>
+      <ion-icon *ngIf="!data.config.darkMode" name="sunny-outline"></ion-icon>
+    </div>
+    <!-- <ion-toggle slot="end" [checked]="data.config.darkMode" (ionChange)="changeDarkMode($event.detail.checked)">Dark:</ion-toggle> -->
     <ion-button slot="end" size="default" (click)="newNote()">New Note</ion-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-header [translucent]="true" *ngIf="data.selNotebookId$ | async as notebookId" (click)="openMenu()">
+  <ion-toolbar>
+    <ion-icon slot="start" aria-hidden="true" name="book-sharp"
+              style="margin-left: 18px; font-size: 20px;"></ion-icon>
+    <ion-title slot="start" style="font-size: 18px;">Notebook: {{notebookId}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -13,21 +28,13 @@
   
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Notesss</ion-title>
+      <ion-title size="large">Notes</ion-title>
     </ion-toolbar>
     <ion-button slot="end" size="default" (click)="newNote()">New Note</ion-button>
   </ion-header>
 
-
-  <!-- <div>
-    <h2>Raw Content</h2>
-    <div>
-      {{ list$ | async | json}}
-    </div>
-  </div> -->
-  
   <ion-list [class.dark]="data.config.darkMode">
-    <ion-item *ngFor="let note of data.notes$ | async" [routerLink]="'/notes/' + note.id" [detail]="false">
+    <ion-item *ngFor="let note of list$ | async" [routerLink]="'/notes/' + note.id" [detail]="false">
         <div slot="start" class="dot dot-unread"></div>
         <ion-label class="ion-text-wrap">
           <h2>
@@ -37,10 +44,15 @@
               <ion-icon aria-hidden="true" name="chevron-forward" size="small" *ngIf="isIos()"></ion-icon>
             </span>
           </h2>
-          <!-- <h3>o = {{note?.order}}</h3> -->
+          <h3 *ngIf="!data.config.notebookId && note?.notebookId" class="notebook-label">
+            <ion-icon aria-hidden="true" name="book-sharp" size="small"></ion-icon>
+            <span style="margin-left: 5px;">{{note?.notebookId}}</span>
+          </h3>
           <p style="padding-top: 5px;">{{ note.content.slice(0, 100) }}</p>
           <!-- <p>ID = {{ note.id }}</p> -->
         </ion-label>
       </ion-item>
   </ion-list>
+  <!-- notebooks={{data.notebooks$ | async | json}} -->
+  <!-- notebookId={{data.config.notebookId}} -->
 </ion-content>

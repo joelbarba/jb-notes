@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from './services/auth.service';
+import { DataService, INotebook } from './services/data.service';
+import { MenuController } from '@ionic/angular';
 
 @Component({
   selector: 'app-root',
@@ -7,5 +9,21 @@ import { AuthService } from './services/auth.service';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-  constructor(public auth: AuthService) {}
+  appPages = [
+    { title: 'All Notes', url: '/', icon: 'home' },
+  ];
+
+  constructor(
+    public auth: AuthService,
+    public data: DataService,
+    private menuCtrl: MenuController
+    ) {}
+
+
+  selectNotebook(notebook?: INotebook) {
+    this.data.selectNotebook(notebook?.id || '');
+    this.menuCtrl.close();
+  }
+
+
 }

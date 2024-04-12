@@ -1,6 +1,6 @@
-import { Component, inject, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, inject, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AlertOptions, IonicModule, Platform } from '@ionic/angular';
+import { ActionSheetButton, ActionSheetController, AlertOptions, IonicModule, Platform } from '@ionic/angular';
 import { DataService, INote } from '../services/data.service';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Share } from '@capacitor/share';
@@ -59,13 +59,23 @@ export class ViewNotePage implements OnInit {
     inputs: [{ label: 'Item', value: '' }]
   };
 
+  // notebookActionButtons: ActionSheetButton[] = [{
+  //   text: 'Cancel',
+  //   role: 'cancel',
+  //   data: { action: 'cancel', },
+  // }];
+
+  @ViewChild('titleInput') titleInput!: any;
+
 
   constructor(
     public data: DataService, 
     private route: ActivatedRoute,
     private router: Router,
     private af: AngularFirestore,
-  ) {}
+    // private actionSheetCtrl: ActionSheetController,
+  ) {
+  }
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id') as string;
@@ -87,6 +97,11 @@ export class ViewNotePage implements OnInit {
         if (!this.note.mode) { this.note.mode = 'text'; }
         this.listBtn = (this.note.content[0] === '-' || this.note.content.indexOf(`\n-`) >= 0);
         if (this.note.mode === 'list') { this.turnTextToCheckList(); }
+
+        if (this.note.title === 'New Note') { 
+          this.moreInfo = true;  // when creating new note, open more info by default
+          setTimeout(() => { if (this.titleInput) { this.titleInput.setFocus(); } }, 150);
+        }
 
       } else { // Updating note's content while on the page
         if (this.note.$saved === 'yes') { this.note = { ...this.note, ...n }; }
@@ -206,7 +221,7 @@ export class ViewNotePage implements OnInit {
 
   openEditNote(item: TCheckItem) {
     console.log(item);
-    this.editAlert.inputs = [{ label: 'Item', type: 'textarea', value: item.text }];
+    this.editAlert.inputs = [{ type: 'textarea', value: item.text, attributes: { autofocus: 'true', 'auto-grow': 'true' } }];
     this.editAlert.buttons = [
       { text: 'Delete', role: 'delete', handler: (_ => {
         console.log('deleteItem', item);
@@ -259,11 +274,12 @@ export class ViewNotePage implements OnInit {
     // console.log(new Date(), 'saving note', this.note);
     if (this.note) {
       const updatedNote = {
-        title  : this.note.title,
-        order  : this.note.order,
-        mode   : this.note.mode,
-        content: this.note.content,
-        updated: this.data.getCurrentTime(),
+        title      : this.note.title,
+        order      : this.note.order,
+        mode       : this.note.mode,
+        content    : this.note.content,
+        updated    : this.data.getCurrentTime(),
+        notebookId : this.note.notebookId,
       };
       this.noteDoc.update(updatedNote);
       this.note.$saved = 'yes';
@@ -275,4 +291,12 @@ export class ViewNotePage implements OnInit {
     if (this.note.mode === 'list') { text = this.formatListToText(); }
     await Share.share({ title: this.note.title, text });
   }
+
+  moveNotebook(notebookId: string) {
+    console.log('Moving note to notebook', notebookId);
+    this.note.notebookId = notebookId;
+    this.noteChange$.next(this.note);
+    if (this.data.config.notebookId) { this.data.selectNotebook(notebookId); }
+  }
+
 }

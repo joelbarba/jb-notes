@@ -28,9 +28,48 @@ ion-checkbox.list-checkbox label.checkbox-wrapper .label-text-wrapper {
 }
 
 .note-content {
-  padding-top: 7.5px;
+  padding-top: 10px;
 
-  ion-checkbox::part(label) { margin: 10px 16px; }
+  ion-badge {
+    position: absolute;
+    right: 15px;
+  }
+  .notebook-label {
+    display: flex;
+    color: lightgray;
+    &.invisible { visibility: hidden; }
+
+    ion-select {
+      min-height: 24px; 
+      .select-wrapper-inner {
+        flex-flow: row-reverse;
+      }
+    }
+    // ion-select { --padding-top: 0px; }
+    ion-select::part(label) {
+      // background: yellow; 
+      margin-inline-end: 5px;
+    }
+    ion-select::part(text) { margin-inline-end: 5px; color: #999999; }
+    // ion-select::part(placeholder) { background: red; }
+    // ion-select::part(icon) { color: red; }
+
+
+  }
+  .note-text-content {
+    margin-top: 5px;
+  }
+  .note-list-content {
+    padding: 0;
+    margin-top: 5px;
+  } 
+
+
+  ion-checkbox::part(label) {
+    margin: 10px 16px;
+    margin-right: 0;
+    white-space: break-spaces;
+  }
   ion-checkbox { --size: 18px; }
 
   &.mid {

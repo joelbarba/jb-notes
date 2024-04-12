@@ -1,9 +1,9 @@
 import { Component, inject } from '@angular/core';
-import { RefresherCustomEvent } from '@ionic/angular';
+import { MenuController, RefresherCustomEvent } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { Platform } from '@ionic/angular';
-import { DataService } from '../services/data.service';
-import { take } from 'rxjs';
+import { DataService, INote, INotebook } from '../services/data.service';
+import { take, map, combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -11,12 +11,18 @@ import { take } from 'rxjs';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
+  list$ = combineLatest([this.data.notes$, this.data.selNotebookId$])
+    .pipe(map(([notes, notebookId]) => {
+      return notes.filter(note => (note.notebookId === notebookId) || !notebookId);
+  }));
 
-  // private data = inject(DataService);  
   private platform = inject(Platform);
-  constructor(public data: DataService, private router: Router) {}
+  constructor(
+    public data: DataService, private router: Router,
+    private menuCtrl: MenuController
+  ) {}
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   formatDate(seconds: number) {
     return new Date(seconds * 1000);
@@ -36,16 +42,22 @@ export class HomePage {
       mode: 'text',
       updated: this.data.getCurrentTime(),
       created: this.data.getCurrentTime(),
+      notebookId: 'principal',
     }).then(docRef => {
       this.router.navigate(['/notes/' + docRef.id]);
     });
   }
 
-  changeDarkMode(value: boolean) {
+  changeDarkMode() {
+    const value = !this.data.config.darkMode;
     this.data.changeDarkMode(value);
     this.data.configDoc.update({ darkMode: value });
   }
 
+
+  openMenu() {
+    this.menuCtrl.open();
+  }
   
   isIos() {
     return this.platform.is('ios')

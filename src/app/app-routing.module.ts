@@ -7,8 +7,12 @@ const routes: Routes = [
     loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
   },
   {
+    path: 'notebooks/:id',
+    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
+  },
+  {
     path: 'notes/:id',
-    loadChildren: () => import('./view-note/view-note.module').then( m => m.ViewNotePageModule)
+    loadChildren: () => import('./view-note/view-note.module').then(m => m.ViewNotePageModule)
   },
   {
     path: '',
