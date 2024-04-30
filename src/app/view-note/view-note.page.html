@@ -6,7 +6,7 @@
     <ion-label class="ion-text-wrap" *ngIf="note$ | async as noteOri">
       <h1>{{ noteOri.title }}</h1>
     </ion-label>    
-    <ion-button *ngIf="!moreInfo" slot="end" color="secondary" (click)="moreInfo = true">More Options</ion-button>
+    <ion-button *ngIf="!moreInfo" slot="end" color="secondary" (click)="moreInfo = true">More</ion-button>
     <ion-button *ngIf="moreInfo"  slot="end" color="secondary" (click)="moreInfo = false">Less</ion-button>
 
   </ion-toolbar>

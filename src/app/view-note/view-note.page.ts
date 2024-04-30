@@ -100,7 +100,10 @@ export class ViewNotePage implements OnInit {
 
         if (this.note.title === 'New Note') { 
           this.moreInfo = true;  // when creating new note, open more info by default
-          setTimeout(() => { if (this.titleInput) { this.titleInput.setFocus(); } }, 150);
+          setTimeout(() => { if (this.titleInput) { 
+            this.note.title = '';
+            this.titleInput.setFocus();
+          } }, 150);
         }
 
       } else { // Updating note's content while on the page

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subject, map, take } from 'rxjs';
+import { AuthService } from './auth.service';
 
 export interface INote {
   id?: string;
@@ -41,17 +42,24 @@ export class DataService {
   selNotebookId$ = new BehaviorSubject('');
   config: IConfig = { lastId: '0', darkMode: true, jumpMode: false, notebookId: '' };
 
-  constructor(private af: AngularFirestore, private router: Router, private route: ActivatedRoute) {
-    this.loadNotes();
-    this.loadNotebooks();
-    this.configDoc.valueChanges().pipe(take(1)).subscribe(config => {
-      console.log('THE CONFIG IS', config);
-      this.config = config as IConfig;
-      if (this.router.url === '/home' && config && config?.lastId !== '0') {
-        this.router.navigate(['/notes/' + config.lastId]);
-      }
-      this.changeDarkMode(config?.darkMode);
-      this.selNotebookId$.next(config?.notebookId || '');
+  constructor(
+    private af: AngularFirestore,
+    private router: Router,
+    private route: ActivatedRoute,
+    private auth: AuthService,
+  ) {
+    this.auth.promise.then(() => {
+      this.loadNotes();
+      this.loadNotebooks();
+      this.configDoc.valueChanges().pipe(take(1)).subscribe(config => {
+        console.log('THE CONFIG IS', config);
+        this.config = config as IConfig;
+        if (this.router.url === '/home' && config && config?.lastId !== '0') {
+          this.router.navigate(['/notes/' + config.lastId]);
+        }
+        this.changeDarkMode(config?.darkMode);
+        this.selNotebookId$.next(config?.notebookId || '');
+      });
     });
   }
 
