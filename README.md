@@ -21,8 +21,8 @@ It uses 2 main collections:
 - **notes**
 
 Every note must be located into one notebook, and they may have an order of apearence on that notebook.<br/>
-The typings for the DB Model are::
-```
+The typings for the DB Model are:
+```typescript
 export interface INotebook {
   id   ?: string;
   name  : string;
