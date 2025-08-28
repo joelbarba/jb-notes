@@ -61,15 +61,21 @@ This configuration is only saved on the current browser tab, so it rollback to t
 
 ### List Mode
 Most of the notes are basics check lists.<br/>
+
 In order to facilitate the handling of those, a doble view is provided with a 2 column layout for the same note content. On the left you will a rendered version of the list with html checkboxes you can click to "check" or "uncheck". On the right side you will see the note in raw text.<br/>
+
 List items are defined by lines starting with a `-`. The check/uncheck value can be added with a `[x]` or `[ ]` characted after the hyphen.
 
 ![Screenshot of the notes lists](./samples/sample2.png)
 
 ### List Item Edition
-By clicking on the left arrow of a list item, you can edit it.
-You can change the text in the popup that opens, or delete the item.
+By clicking on the right arrow of a list item, you can change its text or delete it directly in a popup modal.
+
 ![Screenshot of the notes lists](./samples/sample3.png)
+
+### Dash on Break
+When you opt in this option (toggle the switch), you can write lists more easily in text mode.
+That is, when you hit the `Enter` key to break the line, it will automatically add a `- ` on the new line, so you can continue writing the next element on the list.
 
 ### Dark Mode
 You can toogle the color theme (light/dark) by clicking the `sun` \ `moon` icon on the header of the main list.<br/>
